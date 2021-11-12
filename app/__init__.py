@@ -12,10 +12,16 @@ import requests
 import time
 import json 
 from flask_sqlalchemy import SQLAlchemy
+import configparser
+
+config_obj = configparser.ConfigParser()
+config_obj.read('configfile.ini')
+dbparam = config_obj['sqlalchemy']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://qasim:Qwer_1234-@localhost/covid'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://qasim:Qwer_1234-@localhost/lostnfound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(dbparam['user'],dbparam['password'],dbparam['host'],dbparam['db'])
 db = SQLAlchemy(app)
 from app import models
 from app import views

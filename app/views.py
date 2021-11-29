@@ -1,9 +1,11 @@
-from app import app,db
-from app.models import Country, Province, ProvinceStat , City, CityStat
-from app import models,DataDict
+from celery.result import AsyncResult
+from app import app
+from app.models import Country
+from app import models
 from flask import jsonify, request
 from .requestapi import make_api_call
 import logging
+from .celery_app import add
 # from .utils import make_api_call
 logging.basicConfig(level= logging.DEBUG)
 
@@ -35,5 +37,21 @@ def search():
     iso = request.form['iso']
     data = Country.search_json(iso)
     return jsonify(data)
+
+@app.route('/task')
+def call_method():
+    # app.logger.info("Invoking Method ")
+    task=add.delay(1)
+    task_id = task.task_id
+    result = AsyncResult(id=task_id)
+    logging.debug("----")
+    logging.debug("data:",result)
+    logging.debug("----")
+    # print(task)
+
+    # r = celery_task.add('tasks.longtime_add', kwargs={'x': 1, 'y': 2})
+    # print(type(task))
+    return "done"
+
 
 

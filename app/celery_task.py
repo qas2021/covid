@@ -9,7 +9,7 @@ from celery.schedules import crontab
 celery.conf.beat_schedule = {
     "run_every_day":
     {"task" : "add",
-    "schedule": crontab(minute='*/10'),
+    "schedule": 3.0,
     "args" : (1,),
     },
 
